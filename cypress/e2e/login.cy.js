@@ -1,23 +1,48 @@
-it( 'LOGIN', function(){
-    cy.api({
-        url: 'https://serverest.dev/usuarios',
-        method: 'POST',
-        failOnStatusCode: false,
-        body:{
-                "nome": "Maria Test",
-                "email": "maria_test@qa.com.br",
-                "password": "teste",
-                "administrador": "false"
+import { Access } from '../support/actions/access'
+it( 'LOGIN com sucesso', function(){
 
-            }
-    })
-    cy.visit('https://front.serverest.dev/login')
-    cy.log('Acessou a página de login')
-    cy.get('input[type=email]').type('maria_test@qa.com.br')
-    cy.get('input[type=password]').type('teste')
-    cy.get('button[type="submit"]').click()
+    const user = {
+       name : 'Maria Test',
+       email : 'maria_test@qa.com.br' ,
+       password : 'teste' ,
+       adm : 'false'
 
-    cy.get('section[class="row espacamento"]').should('be.visible')
+    }
 
+   cy.deleteUserByEmail(user.email)
+   cy.postUser(user)
+
+    // visitar
+    Access.go()      
+    // preenche formulario 
+    Access.fillForm(user)   
+    // submeter formulario
+    Access.submit()
+    //pagina de acesso para login
+    Access.shouldLogin()
+
+
+})
+
+it( 'LOGIN sem sucesso', function(){
+
+    const user = {
+       name : 'Maria Test Erro',
+       email : 'maria_test_erro@qa.com.br' ,
+       password : 'teste' ,
+       adm : 'false'
+
+    }
+
+   cy.deleteUserByEmail(user.email)
+   
+
+    // visitar
+    Access.go()      
+    // preenche formulario 
+    Access.fillForm(user)   
+    // submeter formulario
+    Access.submit()
+    Access.errorMsgShouldBe('Email e/ou senha inválidos')
 
 })
