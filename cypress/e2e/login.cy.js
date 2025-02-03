@@ -6,4 +6,6 @@ it( 'LOGIN', function(){
     cy.get('button[type="submit"]').click()
 
     cy.get('section[class="row espacamento"]').should('be.visible')
+
+    cy.log('Teste')
 })
